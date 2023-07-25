@@ -27,7 +27,6 @@ test_ca_url = ['https://raw.githubusercontent.com/y0uf0ol/CA_Deployer/main/Base_
 'https://raw.githubusercontent.com/y0uf0ol/CA_Deployer/main/Base_Set//CA504_AttackSurfaceReduction_ExternalUsers_AllApps_UnkownDevicePlatform_BlockAccess.json',
 'https://raw.githubusercontent.com/y0uf0ol/CA_Deployer/main/Base_Set//CA505_AttackSurfaceReduction_ExternalUsers_NotAllowedApps_AllPlatforms_BlockAccess.json',
 'https://raw.githubusercontent.com/y0uf0ol/CA_Deployer/main/Base_Set//CA506_AttackSurfaceReduction_SeviceAccounts_AllApps_AllPlatforms_UntrustedLocation_BlockAccess.json']
-base_url = 'https://github.com/y0uf0ol/MS_CA_Automater/blob/main/Policy_Testing/Base%20Protection/Links.md' # Base Protection Policies
 group_list = ['SG-CA-ServiceAccounts', 'SG-CA-InternalUsers']
 
 # Create a ServicePrincipalCredentials object
