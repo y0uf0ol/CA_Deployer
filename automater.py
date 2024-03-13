@@ -1,34 +1,34 @@
 import json
+from logging import exception
 import requests
 from msgraph.core import GraphClient
 import msgraph.core
 from azure.identity import ClientSecretCredential
+import argparse
 #Variables
-client_id = input('Enter your appliction ID: ')
-client_secret = input('Enter your client secret: ')
-tenant_id = input('Enter your tenant ID: ')
+client_id = 'b54a95cc-1744-4531-beca-6d040d9a5b62'#input('Enter your appliction ID: ')
+client_secret = 'tI28Q~wEny9QnAbSxOyBU5846XwHSpmW7GJWja~x'#input('Enter your client secret: ')
+tenant_id = 'e0c0089e-139c-46e7-a82f-231cd621849e'#input('Enter your tenant ID: ')
 users_url = 'https://graph.microsoft.com/v1.0/users'
 ca_url = 'https://graph.microsoft.com/beta/identity/conditionalAccess/policies'
 grp_url = 'https://graph.microsoft.com/v1.0/groups'
-
+grp_dict = {}
+user_dict = {}
 ## Hardcoded Shit cause im a lazy fuck
-test_ca_url = ['https://raw.githubusercontent.com/y0uf0ol/CA_Deployer/main/Base_Set//CA100_BaseProtection_%20AllUsers_RegisterSecurityInfo_AllePlattformen_UntrustedLocation_BlockAccess.json',
-'https://raw.githubusercontent.com/y0uf0ol/CA_Deployer/main/Base_Set//CA101_BaseProtection_Admins_AlleApps_AllePlattformen_RequireMFA.json',
-'https://raw.githubusercontent.com/y0uf0ol/CA_Deployer/main/Base_Set//CA103_BaseProtection_InternalUsers_AllApps_AllPlatforms_MFA.json',
-'https://raw.githubusercontent.com/y0uf0ol/CA_Deployer/main/Base_Set//CA107_BaseProtection_ExternalUsers_AllApps_AllPlatforms_RequireMFA.json',
-'https://raw.githubusercontent.com/y0uf0ol/CA_Deployer/main/Base_Set//CA200_IdentityProtection_AllUsers_AllApps_LegacyClients_AllPlatforms_BlockAccess.json',
-'https://raw.githubusercontent.com/y0uf0ol/CA_Deployer/main/Base_Set//CA300_DataProtection_Admins_AllApps_AllPlatform_ShortSign-inFrequency_AND_NeverPersistantBrowserSession.json',
-'https://raw.githubusercontent.com/y0uf0ol/CA_Deployer/main/Base_Set//CA301_DataProtection_InternalUsers_AllApps_AllPlatform_ShortSign-inFrequency.json',
-'https://raw.githubusercontent.com/y0uf0ol/CA_Deployer/main/Base_Set//CA302_DataProtection_ExternalUsers_AllApps_AllPlatform_ShortSign-inFrequency.json',
-'https://raw.githubusercontent.com/y0uf0ol/CA_Deployer/main/Base_Set//CA500_AttackSurfaceReduction_Admins_AllApps_AllPlatforms_UntrustedLocation_BlockAccess.json',
-'https://raw.githubusercontent.com/y0uf0ol/CA_Deployer/main/Base_Set//CA501_AttackSurfaceReduction_InternalUsers_AllApps_AllPlatforms_UntrustedLocation_BlockAccess.json',
-'https://raw.githubusercontent.com/y0uf0ol/CA_Deployer/main/Base_Set//CA502_AttackSurfaceReduction_Admins_AllApps_UnknownDevicePlatforms_BlockAccess.json',
-'https://raw.githubusercontent.com/y0uf0ol/CA_Deployer/main/Base_Set//CA503_AttackSurfaceReduction_InternalUsers_AllApps_UnkownDevicePlatform_BlockAccess.json',
-'https://raw.githubusercontent.com/y0uf0ol/CA_Deployer/main/Base_Set//CA504_AttackSurfaceReduction_ExternalUsers_AllApps_UnkownDevicePlatform_BlockAccess.json',
-'https://raw.githubusercontent.com/y0uf0ol/CA_Deployer/main/Base_Set//CA505_AttackSurfaceReduction_ExternalUsers_NotAllowedApps_AllPlatforms_BlockAccess.json',
-'https://raw.githubusercontent.com/y0uf0ol/CA_Deployer/main/Base_Set//CA506_AttackSurfaceReduction_SeviceAccounts_AllApps_AllPlatforms_UntrustedLocation_BlockAccess.json']
-group_list = ['SG-CA-ServiceAccounts', 'SG-CA-InternalUsers']
+persona_groups = ['CA-Persona-Admin','CA-Persona-Internals','CA-Persona-Guests','CA-Persona-Breakglass','CA-Persona-ADSync']
+breakglass_accounts = ['Panic-Button-Provisioner','All-Access-Pass']
 
+# Define Arguments for script run
+parser = argparse.ArgumentParser()
+parser.add_argument("--P1", help="Takes the P1 Conditional Access Set", action="store_true")
+parser.add_argument("--P2", help="Takes the P2 Conditional Access Set", action="store_true")
+parser.add_argument("-d","--domain",type=str, help="Set the Primary Domain you want to push to", required=True)
+
+args = parser.parse_args()
+
+# Define the domain
+domain = args.domain 
+print(f"Your defined Domain is: {domain}")
 # Create a ServicePrincipalCredentials object
 credentials = ClientSecretCredential(
     client_id=client_id,
@@ -41,24 +41,84 @@ graph_client = GraphClient(credential=credentials)
 # Creating base protection groups
 def create_group(group_name):
     print('Creating group ' + group_name)
-    grp = graph_client.post(grp_url, json={"description": group_name, "displayName": group_name, "groupTypes": [], "mailNickname": group_name, "mailEnabled": False, "securityEnabled": True})
+    grp = graph_client.post(grp_url, json={
+                                                    "description": group_name, 
+                                                    "displayName": group_name, 
+                                                    "groupTypes": [], 
+                                                    "mailNickname": group_name, 
+                                                    "mailEnabled": False, 
+                                                    "securityEnabled": True})
     return grp
 
-for each in group_list:
-    create_group(each)
-    #get all created groupd IDs
-    get_grp = graph_client.get(grp_url).json()
-    for g in get_grp['value']:
-        if g['displayName'] == each:
-            print('Group ' + each + ' created with ID ' + g['id'])
 
+def create_breakglass(breakglass_name):
+    print("Creating Breakglass Account" + breakglass_name)
+    break_user = graph_client.post(users_url, json={  
+                                                    "accountEnabled": True,
+                                                    "displayName": breakglass_name,
+                                                    "mailNickname": breakglass_name,
+                                                    "userPrincipalName": breakglass_name+'@'+domain,
+                                                    "passwordProfile": {
+                                                    "forceChangePasswordNextSignIn": True,
+                                                    "password": "SecurePassword123"}
+                                                    })
+    return break_user
+
+def ca_deployment(ca_set):
+    #Create a new policy
+    print('Creating new policy')
+    for cap in ca_set:
+        re = requests.get(cap).json()
+        graph_client.post(ca_url, json=re)     
+    
+def ca_breakglass_creation():
+    ca_set = []
+    # modify policy CA001 and CA002 with breakglass user
+
+    ca_deployment(ca_set)
+
+    pass
+
+def ca_adsync_creation():
+    pass
+
+def ca_global_creation():
+    pass
+
+def ca_admin_creation():
+    pass
+
+def ca_internals_creation():
+    pass
+
+def ca_guests_creation():
+    pass
+    
 
  # Collect all Base Protection Policies
-print('Collecting Base Protection Policies')
 
-#Create a new policy
-print('Creating new policy')
-for cap in test_ca_url:
-    re = requests.get(cap).json()
-    new_policy = graph_client.post(ca_url, json=re)
-    
+for group in persona_groups:
+    try:
+        create_group(group)
+        #get all created groupd IDs
+        get_grp = graph_client.get(grp_url).json()
+        for g in get_grp['value']:
+            if g['displayName'] == group:
+                print('\033[92mGroup ' + group + ' created with ID \033[0m' + g['id'])
+                grp_dict[g['displayName']] = g['id']
+    except Exception as e:
+        print(f"\033[91mTError ocurred while creating group '{group}': {str(e)}\033[0m")
+
+for user in breakglass_accounts:
+    try:
+        create_breakglass(user)
+        get_user = graph_client.get(users_url).json()
+        for u in get_user['value']:
+            if u['displayName'] == user:
+                print('\033[92mUser ' + user + ' created with ID \033[0m' + u['id'])
+                user_dict[u['displayName']] = u['id']
+    except Exception as e:
+        print(f"\033[91mError ocurred while creating user '{user}': {str(e)}\033[0m")
+
+
+print("\033[96mDONE\033[0m")  
