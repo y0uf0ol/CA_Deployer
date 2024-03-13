@@ -1,7 +1,7 @@
 {
     "templateId": null,
     "displayName": "CA001-BreakGlas01-BaseProtection-AllApps-AllPlatforms-PhishingResistantMFA",
-    "createdDateTime": "",
+    "createdDateTime": null,
     "modifiedDateTime": null,
     "state": "enabledForReportingButNotEnforced",
     "sessionControls": null,
