@@ -7,7 +7,7 @@ from azure.identity import ClientSecretCredential
 import argparse
 #Variables
 client_id = input('Enter your appliction ID: ')
-client_secret = input('Enter your client secret: ')
+client_secret = input('Enter your secret sauce: ')
 tenant_id = input('Enter your tenant ID: ')
 users_url = 'https://graph.microsoft.com/v1.0/users'
 ca_url = 'https://graph.microsoft.com/beta/identity/conditionalAccess/policies'
