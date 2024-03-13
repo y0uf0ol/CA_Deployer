@@ -27,9 +27,7 @@
             "applicationFilter": null
         },
         "users": {
-            "includeUsers": [
-                ""
-            ],
+            "includeUsers": [],
             "excludeUsers": [],
             "includeGroups": [],
             "excludeGroups": [],
