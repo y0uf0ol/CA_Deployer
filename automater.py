@@ -6,9 +6,9 @@ import msgraph.core
 from azure.identity import ClientSecretCredential
 import argparse
 #Variables
-client_id = 'b54a95cc-1744-4531-beca-6d040d9a5b62'#input('Enter your appliction ID: ')
-client_secret = 'tI28Q~wEny9QnAbSxOyBU5846XwHSpmW7GJWja~x'#input('Enter your client secret: ')
-tenant_id = 'e0c0089e-139c-46e7-a82f-231cd621849e'#input('Enter your tenant ID: ')
+client_id = input('Enter your appliction ID: ')
+client_secret =input('Enter your client secret: ')
+tenant_id = input('Enter your tenant ID: ')
 users_url = 'https://graph.microsoft.com/v1.0/users'
 ca_url = 'https://graph.microsoft.com/beta/identity/conditionalAccess/policies'
 grp_url = 'https://graph.microsoft.com/v1.0/groups'
