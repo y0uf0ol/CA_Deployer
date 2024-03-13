@@ -44,7 +44,6 @@
         "builtInControls": [],
         "customAuthenticationFactors": [],
         "termsOfUse": [],
-        "authenticationStrength@odata.context": "https://graph.microsoft.com/beta/$metadata#identity/conditionalAccess/policies('c5322e99-afd6-4022-a763-d6f817c11577')/grantControls/authenticationStrength/$entity",
         "authenticationStrength": {
             "id": "00000000-0000-0000-0000-000000000004",
             "createdDateTime": "2021-12-01T08:00:00Z",
