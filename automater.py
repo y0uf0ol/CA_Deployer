@@ -21,9 +21,9 @@ from msgraph.generated.models.cloud_app_security_session_control import CloudApp
 from msgraph.generated.models.sign_in_frequency_session_control import SignInFrequencySessionControl
 from mshgraph.generated.models.authentication_strength import AuthenticationStrengthPolicy
 # Variables
-client_id = 'b54a95cc-1744-4531-beca-6d040d9a5b62'#input("Enter your appliction ID: ")
-client_secret = 'OTz8Q~fR0fa5s5kAIuaVpeB4vcYoTVqzX~A7ja0j'#input("Enter your secret sauce: ")
-tenant_id = 'e0c0089e-139c-46e7-a82f-231cd621849e'#input("Enter your tenant ID: ")
+client_id = input("Enter your appliction ID: ")
+client_secret = input("Enter your secret sauce: ")
+tenant_id = input("Enter your tenant ID: ")
 users_url = "https://graph.microsoft.com/v1.0/users"
 ca_url = "https://graph.microsoft.com/beta/identity/conditionalAccess/policies"
 grp_url = "https://graph.microsoft.com/v1.0/groups"
