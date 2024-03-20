@@ -2,7 +2,7 @@ terraform {
   required_providers {
     azuread = {
       source  = "hashicorp/azuread"
-      version = "=2.15.0"
+      version = "=2.47.0"
     }
   }
 }
@@ -12,34 +12,67 @@ provider "azuread" {
 
 }
 
+data "azuread_domains" "aad_domains" {}
 
-resource "azuread_conditional_access_policy" "example" {
-  display_name = "CA010-ADSyncAccount-AttackSurfaceReduction-AllApps-UnallowedPaltforms-Block"
-  state        = "enabledForReportingButNotEnforced"
+output "domain_name" {
+  value = data.azuread_domains.aad_domains.domains.0.domain_name
+}
 
-  conditions {
-    client_app_types = ["all"]
+resource "azuread_group" "admins" {
+  display_name     = "CA-Persona-Admins"
+  security_enabled = true
+}
 
-    applications {
-      included_applications = ["All"]
-    }
-    locations {
-      included_locations = ["All"]
-    }
+resource "azuread_group" "sync" {
+  display_name     = "CA-Persona-ADSyncAccount"
+  security_enabled = true
+}
 
+resource "azuread_group" "break" {
+  display_name     = "CA-Persona-BreakGlass"
+  security_enabled = true
+}
 
-    users {
-      included_roles = ["d29b2b05-8046-44ba-8758-1e26182fcf32"]
-    }
+resource "azuread_group" "guest" {
+  display_name     = "CA-Persona-GuestUsers"
+  security_enabled = true
+}
 
-    platforms {
-      included_platforms = ["all"]
-      excluded_platforms = ["windows"]
-    }
-  }
+resource "azuread_group" "internal" {
+  display_name     = "CA-Persona-Internals"
+  security_enabled = true
+}
 
-  grant_controls {
-    operator          = "OR"
-    built_in_controls = ["block"]
-  }
+output "admins_group_id" {
+  value = azuread_group.admins.id
+}
+
+output "sync_group_id" {
+  value = azuread_group.sync.id
+}
+
+output "break_group_id" {
+  value = azuread_group.break.id
+}
+
+output "guest_group_id" {
+  value = azuread_group.guest.id
+}
+
+output "internal_group_id" {
+  value = azuread_group.internal.id
+}
+
+resource "azuread_user" "Panic" {
+  display_name        = "Panic-Button-Provisioner"
+  account_enabled     = false
+  user_principal_name = "panic@${data.azuread_domains.aad_domains.domains.0.domain_name}"
+  password = "notmyproblem"
+}
+
+resource "azuread_user" "All" {
+  display_name        = "All-Access_Pass"
+  account_enabled     = false
+  user_principal_name = "all@${data.azuread_domains.aad_domains.domains.0.domain_name}"
+  password = "notmyproblem"
 }
