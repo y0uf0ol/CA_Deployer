@@ -67,12 +67,12 @@ resource "azuread_user" "Panic" {
   display_name        = "Panic-Button-Provisioner"
   account_enabled     = false
   user_principal_name = "panic@${data.azuread_domains.aad_domains.domains.0.domain_name}"
-  password = "notmyproblem"
+  password            = "notmyproblem123!!!!"
 }
 
 resource "azuread_user" "All" {
   display_name        = "All-Access_Pass"
   account_enabled     = false
   user_principal_name = "all@${data.azuread_domains.aad_domains.domains.0.domain_name}"
-  password = "notmyproblem"
+  password            = "notmyproblem1234!!!!!!"
 }
