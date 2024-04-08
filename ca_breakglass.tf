@@ -1,16 +1,3 @@
-resource "azuread_authentication_strength_policy" "Custom_Phish" {
-  display_name = "Custom Phishing-resistant"
-  description  = "Generated Phis Resist Pol"
-  allowed_combinations = [
-    "fido2",
-    "temporaryAccessPassOneTime",
-  ]
-}
-
-output "phish_resist_id" {
-  value = azuread_authentication_strength_policy.Custom_Phish.id
-}
-
 resource "azuread_conditional_access_policy" "break1" {
   display_name = "CA001-BreakGlas01-BaseProtection-AllApps-AllPlatforms-PhishingResistantMFA"
   state        = "enabledForReportingButNotEnforced"

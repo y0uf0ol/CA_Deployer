@@ -76,3 +76,17 @@ resource "azuread_user" "All" {
   user_principal_name = "all@${data.azuread_domains.aad_domains.domains.0.domain_name}"
   password            = "notmyproblem1234!!!!!!"
 }
+
+
+resource "azuread_authentication_strength_policy" "Custom_Phish" {
+  display_name = "Custom Phishing-resistant"
+  description  = "Generated Phis Resist Pol"
+  allowed_combinations = [
+    "fido2",
+    "temporaryAccessPassOneTime",
+  ]
+}
+
+output "phish_resist_id" {
+  value = azuread_authentication_strength_policy.Custom_Phish.id
+}

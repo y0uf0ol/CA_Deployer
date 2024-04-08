@@ -33,12 +33,12 @@ resource "azuread_named_location" "block_location" {
 
 output "trusted_ip_id" {
   value = azuread_named_location.trusted_ip.id
-}  
+}
 
 
 output "trusted_location_id" {
   value = azuread_named_location.trusted_location.id
-}  
+}
 
 
 output "block_location_id" {

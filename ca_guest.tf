@@ -21,10 +21,10 @@ resource "azuread_conditional_access_policy" "ca400" {
   }
 
   grant_controls {
-    operator                 = "OR"
-    built_in_controls        = ["mfa"]
+    operator                      = "OR"
+    built_in_controls             = ["mfa"]
     custom_authentication_factors = []
-    terms_of_use             = []
+    terms_of_use                  = []
   }
 }
 
@@ -51,8 +51,8 @@ resource "azuread_conditional_access_policy" "ca401" {
   }
 
   session_controls {
-    sign_in_frequency_period  = "days"
-    sign_in_frequency         = 1
+    sign_in_frequency_period = "days"
+    sign_in_frequency        = 1
   }
 }
 
