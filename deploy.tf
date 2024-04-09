@@ -8,7 +8,9 @@ terraform {
 }
 
 provider "azuread" {
-  tenant_id = ""
+  tenant_id     = var.tenant_id
+  client_id     = var.app_id
+  client_secret = var.secret_id
 
 }
 
