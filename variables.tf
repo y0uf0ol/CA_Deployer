@@ -15,3 +15,9 @@ variable "secret_id" {
   description = "Secret ID"
   default = ""
 }
+
+variable "features" {
+  type = bool
+  description = "feature selection entra p1 or p2"
+  default = false 
+}
