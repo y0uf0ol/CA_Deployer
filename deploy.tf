@@ -28,16 +28,35 @@ resource "azuread_group" "admins" {
 resource "azuread_group" "sync" {
   display_name     = "CA-Persona-ADSyncAccount"
   security_enabled = true
+  types            = ["DynamicMembership"]
+
+  dynamic_membership {
+    enabled = true
+    rule    = "user.displayName -startsWith \"On-Premises\""
+
+  }
 }
 
 resource "azuread_group" "break" {
   display_name     = "CA-Persona-BreakGlass"
   security_enabled = true
+  types            = ["DynamicMembership"]
+
+  dynamic_membership {
+    enabled = true
+    rule    = "user.displayName -startsWith \"Break\""
+  }
 }
 
 resource "azuread_group" "guest" {
   display_name     = "CA-Persona-GuestUsers"
   security_enabled = true
+  types            = ["DynamicMembership"]
+
+  dynamic_membership {
+    enabled = true
+    rule    = "user.userType - eq \"Guest\""
+  }
 }
 
 resource "azuread_group" "internal" {
@@ -66,14 +85,14 @@ output "internal_group_id" {
 }
 
 resource "azuread_user" "Panic" {
-  display_name        = "Panic-Button-Provisioner"
+  display_name        = "Break-Panic-Button-Provisioner"
   account_enabled     = false
   user_principal_name = "panic@${data.azuread_domains.aad_domains.domains.0.domain_name}"
   password            = "notmyproblem123!!!!"
 }
 
 resource "azuread_user" "All" {
-  display_name        = "All-Access_Pass"
+  display_name        = "Break-All-Access_Pass"
   account_enabled     = false
   user_principal_name = "all@${data.azuread_domains.aad_domains.domains.0.domain_name}"
   password            = "notmyproblem1234!!!!!!"

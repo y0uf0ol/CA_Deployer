@@ -1,23 +1,23 @@
 variable "tenant_id" {
-  type = string
+  type        = string
   description = "Tenant ID "
-  default = ""
+  default     = ""
 }
 
 variable "app_id" {
-  type = string
+  type        = string
   description = "Application ID"
-  default = ""
+  default     = ""
 }
 
 variable "secret_id" {
-  type = string
+  type        = string
   description = "Secret ID"
-  default = ""
+  default     = ""
 }
 
 variable "features" {
-  type = bool
+  type        = bool
   description = "feature selection entra p1 or p2"
-  default = false 
+  default     = false
 }
