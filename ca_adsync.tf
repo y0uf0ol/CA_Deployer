@@ -14,7 +14,7 @@ resource "azuread_conditional_access_policy" "ca011" {
       included_roles  = ["d29b2b05-8046-44ba-8758-1e26182fcf32"]
       excluded_users  = []
       included_groups = []
-      excluded_groups = []
+      excluded_groups = [azuread_group.break.id]
       included_users  = []
       excluded_roles  = []
     }
@@ -48,7 +48,7 @@ resource "azuread_conditional_access_policy" "ca010" {
     users {
       included_roles  = ["d29b2b05-8046-44ba-8758-1e26182fcf32"]
       excluded_users  = []
-      included_groups = []
+      included_groups = [azuread_group.break.id]
       excluded_groups = []
       included_users  = []
       excluded_roles  = []

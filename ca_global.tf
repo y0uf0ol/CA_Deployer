@@ -120,7 +120,7 @@ resource "azuread_conditional_access_policy" "ca024" {
         "810a2642-a034-447f-a5e8-41beaa378541"
       ]
       included_groups = []
-      excluded_groups = []
+      excluded_groups = [azuread_group.break.id]
       included_roles  = []
     }
 
@@ -150,7 +150,7 @@ resource "azuread_conditional_access_policy" "ca023" {
     users {
       included_users  = ["All"]
       excluded_users  = []
-      included_groups = []
+      included_groups = [azuread_group.break.id]
       excluded_groups = [azuread_group.break.id]
       included_roles  = []
       excluded_roles  = []
@@ -184,7 +184,7 @@ resource "azuread_conditional_access_policy" "ca022" {
 
     users {
       included_users  = ["All"]
-      excluded_users  = []
+      excluded_users  = [azuread_group.break.id]
       included_groups = []
       excluded_groups = [azuread_group.break.id]
       included_roles  = []
@@ -219,7 +219,7 @@ resource "azuread_conditional_access_policy" "ca021" {
 
     users {
       included_users  = ["All"]
-      excluded_users  = []
+      excluded_users  = [azuread_group.break.id]
       included_groups = []
       excluded_groups = []
       included_roles  = []
@@ -248,7 +248,7 @@ resource "azuread_conditional_access_policy" "ca020" {
 
     users {
       included_users  = ["All"]
-      excluded_users  = []
+      excluded_users  = [azuread_group.break.id]
       included_groups = []
       excluded_groups = []
       included_roles  = []

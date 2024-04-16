@@ -12,7 +12,7 @@ resource "azuread_conditional_access_policy" "ca200" {
 
     users {
       included_groups = []
-      excluded_groups = []
+      excluded_groups = [azuread_group.break.id]
       excluded_users  = []
       excluded_roles  = []
       included_users  = []
@@ -42,7 +42,7 @@ resource "azuread_conditional_access_policy" "ca201" {
 
     users {
       included_groups = []
-      excluded_groups = []
+      excluded_groups = [azuread_group.break.id]
       excluded_users  = []
       excluded_roles  = []
       included_users  = []
@@ -77,7 +77,7 @@ resource "azuread_conditional_access_policy" "ca202" {
 
     users {
       included_groups = []
-      excluded_groups = []
+      excluded_groups = [azuread_group.break.id]
       excluded_users  = []
       excluded_roles  = []
       included_users  = []
@@ -112,7 +112,7 @@ resource "azuread_conditional_access_policy" "ca0203" {
 
     users {
       included_groups = []
-      excluded_groups = []
+      excluded_groups = [azuread_group.break.id]
       excluded_users  = []
       excluded_roles  = []
       included_users  = []
@@ -147,7 +147,7 @@ resource "azuread_conditional_access_policy" "ca204" {
 
     users {
       included_groups = []
-      excluded_groups = []
+      excluded_groups = [azuread_group.break.id]
       excluded_users  = []
       excluded_roles  = ["d29b2b05-8046-44ba-8758-1e26182fcf32"]
       included_users  = []
@@ -182,7 +182,7 @@ resource "azuread_conditional_access_policy" "ca205" {
 
     users {
       included_groups = []
-      excluded_groups = []
+      excluded_groups = [azuread_group.break.id]
       excluded_users  = []
       excluded_roles  = ["d29b2b05-8046-44ba-8758-1e26182fcf32"]
       included_users  = []
@@ -218,7 +218,7 @@ resource "azuread_conditional_access_policy" "ca206" {
 
     users {
       included_groups = []
-      excluded_groups = []
+      excluded_groups = [azuread_group.break.id]
       excluded_users  = []
       excluded_roles  = ["d29b2b05-8046-44ba-8758-1e26182fcf32"]
       included_users  = []

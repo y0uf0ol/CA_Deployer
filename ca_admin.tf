@@ -14,7 +14,7 @@ resource "azuread_conditional_access_policy" "ca100" {
       included_groups = [azuread_group.admins.id]
       excluded_users  = []
       included_users  = []
-      excluded_groups = []
+      excluded_groups = [azuread_group.break.id]
       included_roles  = []
       excluded_roles  = []
     }
@@ -43,7 +43,7 @@ resource "azuread_conditional_access_policy" "ca101" {
       included_groups = [azuread_group.admins.id]
       excluded_users  = []
       included_users  = []
-      excluded_groups = []
+      excluded_groups = [azuread_group.break.id]
       included_roles  = []
       excluded_roles  = []
     }
@@ -78,7 +78,7 @@ resource "azuread_conditional_access_policy" "ca102" {
       included_groups = [azuread_group.admins.id]
       excluded_users  = []
       included_users  = []
-      excluded_groups = []
+      excluded_groups = [azuread_group.break.id]
       included_roles  = []
       excluded_roles  = []
     }
@@ -113,7 +113,7 @@ resource "azuread_conditional_access_policy" "ca103" {
       included_groups = [azuread_group.admins.id]
       excluded_users  = []
       included_users  = []
-      excluded_groups = []
+      excluded_groups = [azuread_group.break.id]
       included_roles  = []
       excluded_roles  = []
     }
@@ -142,7 +142,7 @@ resource "azuread_conditional_access_policy" "ca104" {
       included_groups = [azuread_group.admins.id]
       excluded_users  = []
       included_users  = []
-      excluded_groups = []
+      excluded_groups = [azuread_group.break.id]
       included_roles  = []
       excluded_roles  = []
     }
@@ -177,7 +177,7 @@ resource "azuread_conditional_access_policy" "ca105" {
       included_groups = [azuread_group.admins.id]
       excluded_users  = []
       included_users  = []
-      excluded_groups = []
+      excluded_groups = [azuread_group.break.id]
       included_roles  = []
       excluded_roles  = []
     }
@@ -212,7 +212,7 @@ resource "azuread_conditional_access_policy" "ca106" {
       included_groups = [azuread_group.admins.id]
       excluded_users  = []
       included_users  = []
-      excluded_groups = []
+      excluded_groups = [azuread_group.break.id]
       included_roles  = []
       excluded_roles  = []
     }
