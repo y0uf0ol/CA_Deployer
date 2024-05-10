@@ -1,21 +1,15 @@
 resource "azuread_named_location" "trusted_ip" {
   display_name = "IP Named Location"
   ip {
-    ip_ranges = [
-      "1.1.1.1/32",
-      "2.2.2.2/32",
-    ]
-    trusted = true
+    ip_ranges = [join("", var.trusted_ip)]
+    trusted   = true
   }
 }
 
 resource "azuread_named_location" "trusted_location" {
   display_name = "Country Named Location"
   country {
-    countries_and_regions = [
-      "US",
-      "DE",
-    ]
+    countries_and_regions                 = [split("," ,var.trusted_countries)]
     include_unknown_countries_and_regions = false
   }
 }
@@ -24,9 +18,7 @@ resource "azuread_named_location" "trusted_location" {
 resource "azuread_named_location" "block_location" {
   display_name = "Block Country Named Location"
   country {
-    countries_and_regions = [
-      "RU",
-    ]
+    countries_and_regions                 = [join("", var.block_countries)]
     include_unknown_countries_and_regions = false
   }
 }

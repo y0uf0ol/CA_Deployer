@@ -1,4 +1,4 @@
-#Documentation
+Documentation
 
 -Introduction
 --Purpose of the Terraform code
