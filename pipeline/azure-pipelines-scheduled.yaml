@@ -1,0 +1,107 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+schedules:
+- cron: "0 */3 * * *"
+  displayName: Weekday Build
+  branches:
+    include:
+    - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  bkstrgrg: 'XXXX' # ressource group
+  bkstrg: '' # storage account
+  bkcontainer: 'tfsstate'
+  bkstrgkey: ''
+  bkscarm: '' #service connection to statefile
+  working_directory: '$(System.DefaultWorkingDirectory)/terraform-ca-code'
+
+
+stages:
+  - stage: Validate
+    jobs:
+      - job: ValidateAnalytics
+        steps:
+          - task: TerraformInstaller@0
+            inputs:
+              terraformVersion: 'latest'
+          - task: TerraformTaskV3@3
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              workingDirectory: '$(working_directory)'
+              backendServiceArm: '$(bkscarm)'
+              backendAzureRmResourceGroupName: '$(bkstrgrg)'
+              backendAzureRmStorageAccountName: '$(bkstrg)'
+              backendAzureRmContainerName: '$(bkcontainer)'
+              backendAzureRmKey: '$(bkstrgkey)'
+          - task: TerraformTaskV3@3
+            inputs:
+              provider: 'azurerm'
+              command: 'validate'
+              workingDirectory: '$(working_directory)'
+
+
+  - stage: Plan
+    jobs:
+      - job: PlanAnalytics
+        steps:
+          - task: TerraformInstaller@0
+            inputs:
+              terraformVersion: 'latest'
+          - task: TerraformTaskV3@3
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              workingDirectory: '$(working_directory)'
+              backendServiceArm: '$(bkscarm)'
+              backendAzureRmResourceGroupName: '$(bkstrgrg)'
+              backendAzureRmStorageAccountName: '$(bkstrg)'
+              backendAzureRmContainerName: '$(bkcontainer)'
+              backendAzureRmKey: '$(bkstrgkey)'
+          - task: TerraformTaskV3@3
+            inputs:
+              provider: 'azurerm'
+              command: 'plan'
+              environmentServiceNameAzureRM: '$(bkscarm)'
+              workingDirectory: '$(working_directory)'
+            env:
+              TF_VAR_secret_id: $(TF_VAR_secret_id)
+              TF_VAR_app_id: $(TF_VAR_app_id)
+              TF_VAR_tenant_id: $(TF_VAR_tenant_id)
+
+#  - stage: Apply
+#    jobs:
+#      - job: ApplyAnalytics
+#        steps:
+#          - task: TerraformInstaller@0
+#            inputs:
+#              terraformVersion: 'latest'
+#          - task: TerraformTaskV3@3
+#            inputs:
+#              provider: 'azurerm'
+#              command: 'init'
+#              workingDirectory: '$(working_directory)'
+#              backendServiceArm: '$(bkscarm)'
+#              backendAzureRmResourceGroupName: '$(bkstrgrg)'
+#              backendAzureRmStorageAccountName: '$(bkstrg)'
+#              backendAzureRmContainerName: '$(bkcontainer)'
+#              backendAzureRmKey: '$(bkstrgkey)'
+#          - task: TerraformTaskV3@3
+#            inputs:
+#              provider: 'azurerm'
+#              command: 'apply'
+#              environmentServiceNameAzureRM: '$(bkscarm)'
+#              workingDirectory: '$(working_directory)'
+#            env:
+#              TF_VAR_secret_id: $(TF_VAR_secret_id)
+#              TF_VAR_app_id: $(TF_VAR_app_id)
+#              TF_VAR_tenant_id: $(TF_VAR_tenant_id)

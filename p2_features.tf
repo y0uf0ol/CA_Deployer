@@ -130,6 +130,7 @@ resource "azuread_conditional_access_policy" "ca208" {
 }
 
 resource "azuread_conditional_access_policy" "ca209" {
+  count        = var.features ? 1 : 0
   display_name = "CA209-Internals-IdentityProtection-AllApps-AllPlatforms-HighUserRisk_MFA_AND_ChangePWD"
   state        = "enabledForReportingButNotEnforced"
 

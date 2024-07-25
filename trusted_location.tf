@@ -9,7 +9,7 @@ resource "azuread_named_location" "trusted_ip" {
 resource "azuread_named_location" "trusted_location" {
   display_name = "Country Named Location"
   country {
-    countries_and_regions                 = [split("," ,var.trusted_countries)]
+    countries_and_regions                 = [split(",", var.trusted_countries)]
     include_unknown_countries_and_regions = false
   }
 }
