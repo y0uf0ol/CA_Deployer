@@ -1,5 +1,5 @@
-# Azure AD Security Configuration
-This project automates the setup of security configurations in Azure Active Directory using Terraform.
+# CA Deploy
+This project automates the setup of CA in Entra using Terraform.
 Prerequisites
 
 ## An Azure AD application registration with the following permissions:
