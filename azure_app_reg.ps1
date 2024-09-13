@@ -1,68 +1,66 @@
-#Skript muss als ADMIN ausgeführt werden!
-#Skript muss als ADMIN ausgeführt werden!
-#Skript muss als ADMIN ausgeführt werden!
+#Script must be run as ADMIN!
+#Script must be run as ADMIN!
+#Script must be run as ADMIN!
 
-
-#Installieren des Moduls
+#Install the module
 Install-Module AzureAD
 Import-Module AzureAD
-
 Connect-AzureAD
 
+# Script to create an Azure AD application registration, assign Microsoft Graph permissions, and create a client secret
 
-# Skript zum Erstellen einer Azure AD-Anwendungsregistrierung, Zuweisen der Microsoft Graph-Berechtigungen und Erstellen eines Client Secrets
-
-# Variablen
-$appName = "TerraformTest (via PowerShell)"
-$requiredPermissions = @("Application.Read.All" ,"Directory.Read.All", "Domain.Read.All" , "Group.ReadWrite.All" , "Policy.Read.All" , "Policy.ReadWrite.AuthenticationMethod" , "Policy.ReadWrite.Authorization" , "Policy.ReadWrite.ConditionalAccess", "User.ReadWrite.All")
+# Variables
+$appName = "CA Deployer"
+$requiredPermissions = @("Application.Read.All", "Directory.Read.All", "Domain.Read.All", "Group.ReadWrite.All", "Policy.Read.All", "Policy.ReadWrite.AuthenticationMethod", "Policy.ReadWrite.Authorization", "Policy.ReadWrite.ConditionalAccess", "User.ReadWrite.All")
 $clientSecretDescription = "Terraform Client Secret"
 $clientSecretStartDate = [System.DateTime]::Now
 $clientSecretEndDate = $clientSecretStartDate.AddYears(1)
 
-
-
-# Schritt 1: Erstellen der Anwendungsregistrierung
+# Step 1: Create the application registration
 $app = New-AzureADApplication -DisplayName $appName
 
-# Schritt 2: Service Principal für die Anwendung erstellen
+# Step 2: Create service principal for the application
 $servicePrincipal = New-AzureADServicePrincipal -AppId $app.AppId
 
-# Schritt 3: Microsoft Graph API Berechtigungen zuweisen
-# Zuerst die ID der Microsoft Graph API holen
-$graphAPI = Get-AzureADServicePrincipal -Filter "DisplayName eq 'Microsoft Graph'"
+# Step 3: Assign Microsoft Graph API permissions
+# First, get the ID of the Microsoft Graph API
+$graphAPI = Get-AzureADServicePrincipal -Filter "AppId eq '00000003-0000-0000-c000-000000000000'"
 
-# Die IDs der benötigten Berechtigungen holen
+# Get the IDs of the required permissions
 $permissions = @()
 foreach ($permission in $requiredPermissions) {
-    $graphPermission = $graphAPI.Oauth2Permissions | Where-Object { $_.Value -eq $permission }
-    $resourceAccess = New-Object -TypeName Microsoft.Open.AzureAD.Model.ResourceAccess -ArgumentList $graphPermission.Id, "Scope"
-    $permissions += $resourceAccess
+    $appRole = $graphAPI.AppRoles | Where-Object { $_.Value -eq $permission -and $_.AllowedMemberTypes -contains "Application" }
+    if ($appRole) {
+        $resourceAccess = New-Object -TypeName Microsoft.Open.AzureAD.Model.ResourceAccess
+        $resourceAccess.Id = $appRole.Id
+        $resourceAccess.Type = "Role"
+        $permissions += $resourceAccess
+    }
 }
 
-# Berechtigungen der Anwendung zuweisen
-$appPermission = New-Object -TypeName Microsoft.Open.AzureAD.Model.RequiredResourceAccess
-$appPermission.ResourceAppId = $graphAPI.AppId
-$appPermission.ResourceAccess = $permissions
-$app.RequiredResourceAccess = $appPermission
-Set-AzureADApplication -ObjectId $app.ObjectId -RequiredResourceAccess $app.RequiredResourceAccess
+# Assign permissions to the application
+$requiredResourceAccess = New-Object -TypeName Microsoft.Open.AzureAD.Model.RequiredResourceAccess
+$requiredResourceAccess.ResourceAppId = $graphAPI.AppId
+$requiredResourceAccess.ResourceAccess = $permissions
+Set-AzureADApplication -ObjectId $app.ObjectId -RequiredResourceAccess @($requiredResourceAccess)
 
-# Schritt 4: Client Secret erstellen
-$clientSecret = New-AzureADApplicationPasswordCredential -ObjectId $app.ObjectId -CustomKeyIdentifier $clientSecretDescription -StartDate $clientSecretStartDate -EndDate $clientSecretEndDate -Value (New-Guid).Guid
+# Step 4: Create client secret
+$clientSecret = New-AzureADApplicationPasswordCredential -ObjectId $app.ObjectId -CustomKeyIdentifier $clientSecretDescription -StartDate $clientSecretStartDate -EndDate $clientSecretEndDate
 
-#Schritt 5: Tenant ID abfragen
-$tenantid = (Get-AzureADTenantDetail).objectid
+# Step 5: Query Tenant ID
+$tenantId = (Get-AzureADTenantDetail).ObjectId
 
-#Schritt 6: Ausgabe aller Werte.
-Write-Output "Anwendungsregistrierung '$appName' erstellt und Berechtigungen '$($requiredPermissions -join ", ")' zugewiesen."
+# Step 6: Output all values
+Write-Output "Application registration '$appName' created and permissions '$($requiredPermissions -join ", ")' assigned."
 Write-Host ""
 Write-Host ""
-Write-Host "Tenant ID: $tenantid" -BackgroundColor Black -ForegroundColor white
+Write-Host "Tenant ID: $tenantId" -BackgroundColor Black -ForegroundColor White
 Write-Host ""
-Write-Host "Client ID: $($app.AppId)" -BackgroundColor Black -ForegroundColor white
+Write-Host "Client ID: $($app.AppId)" -BackgroundColor Black -ForegroundColor White
 Write-Host ""
-Write-Host "Client Secret: $($clientSecret.Value)" -BackgroundColor Black -ForegroundColor white
+Write-Host "Client Secret: $($clientSecret.Value)" -BackgroundColor Black -ForegroundColor White
 
-
-
-#Zuletzt muss man den Berechtigungen noch einmal zustimmen als admin!
-#https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/RegisteredApps
+Write-Host ""
+Write-Host "IMPORTANT: You must now grant permissions for the application as an administrator."
+Write-Host "Go to: https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/RegisteredApps"
+Write-Host "Select the application '$appName', go to 'API permissions' and click on 'Grant admin consent for [Your Directory]'."
